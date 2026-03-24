@@ -1,47 +1,32 @@
 import * as vscode from 'vscode';
+import { GitService } from './services/gitServices';
+import OllamaTreeProvider from './views/OllamaTree';
+import OllamaCmds from './commands/ollamaCmds';
+import ExtensionState from './state/state';
 
-class OllamaItem extends vscode.TreeItem {
-	constructor(
-		public readonly label: string,
-		public readonly command?: vscode.Command
-	) {
-		super(label);
-		this.tooltip = label;
-	}
-}
-
-class OllamaTreeProvider implements vscode.TreeDataProvider<OllamaItem> {
-	private _onDidChangeTreeData: vscode.EventEmitter<OllamaItem | undefined | void> = new vscode.EventEmitter();
-	readonly onDidChangeTreeData: vscode.Event<OllamaItem | undefined | void> = this._onDidChangeTreeData.event;
-
-	getTreeItem(element: OllamaItem): vscode.TreeItem {
-		return element;
-	}
-
-	getChildren(): OllamaItem[] {
-		return [
-			new OllamaItem('Enter Name', {
-				command: 'ollama-auto-commit.inputName',
-				title: 'Enter Name'
-			})
-		];
-	}
-}
 
 export function activate(context: vscode.ExtensionContext) {
-	const provider = new OllamaTreeProvider();
-	vscode.window.registerTreeDataProvider('ollamaCommitView', provider);
+	const state = new ExtensionState(context);
 
-	// Command triggered by the tree item
-	const disposable = vscode.commands.registerCommand('ollama-auto-commit.inputName', async () => {
-		const name = await vscode.window.showInputBox({
-			prompt: 'Enter your name',
-			placeHolder: 'John Doe'
-		});
-		if (name) {
-			vscode.window.showInformationMessage(`Hello ${name} from Ollama!`);
+	const testCmd = vscode.commands.registerCommand('ollama-auto-commit.testGit', async () => {
+		const git = GitService.fromWorkSpace();
+		if (!git) {
+			vscode.window.showErrorMessage("no workspace found");
+			return;
 		}
+
+		const info = git.getStagedInfo();
+		console.log(info);
+		console.log(info.diff);
+
+
 	});
 
-	context.subscriptions.push(disposable);
+
+	const provider = new OllamaTreeProvider(state);
+	const cmds = new OllamaCmds(state, provider);
+
+	vscode.window.registerTreeDataProvider('ollamaCommitView', provider);
+	context.subscriptions.push(...cmds.registerCommands());
+	context.subscriptions.push(testCmd);
 }
