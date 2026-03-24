@@ -29,10 +29,28 @@
         }
       ]
     },
+    "menus": {
+      "view/title": [
+        {
+          "command": "ollama-auto-commit.pickModel",
+          "when": "view == ollamaCommitView",
+          "group": "navigation"
+        }
+      ]
+    },
     "commands": [
       {
-        "command": "ollama-auto-commit.greet",
-        "title": "Hello World"
+        "command": "ollama-auto-commit.pickModel",
+        "title": "Select model",
+        "icon": "resources/model.svg"
+      },
+      {
+        "command": "ollama-auto-commit.testGit",
+        "title": "Test Git"
+      },
+      {
+        "command": "ollama-auto-commit.listModels",
+        "title": "List Models"
       }
     ]
   },
