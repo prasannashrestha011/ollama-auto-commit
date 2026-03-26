@@ -36,6 +36,13 @@
           "when": "view == ollamaCommitView",
           "group": "navigation"
         }
+      ],
+      "view/item/context": [
+        {
+          "command": "ollama-auto-commit.stageAll",
+          "when": "viewItem == changesSection",
+          "group": "inline"
+        }
       ]
     },
     "commands": [
@@ -51,6 +58,11 @@
       {
         "command": "ollama-auto-commit.listModels",
         "title": "List Models"
+      },
+      {
+        "command": "ollama-auto-commit.stageAll",
+        "title": "Stage All files",
+        "icon": "$(check)"
       }
     ]
   },
