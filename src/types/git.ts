@@ -19,7 +19,8 @@ export interface StagedInfo {
 }
 
 export interface GitExtension {
-    getApi(version: 1): GitApi;
+    getAPI?(version: 1): GitApi;
+    getApi?(version: 1): GitApi;
 }
 export interface GitApi {
     repositories: Repository[]
@@ -30,7 +31,8 @@ export interface Repository {
     diff(cached: boolean): Promise<string>
 }
 interface RepositoryState {
-    indexChanges: Change[]
+    indexChanges: Change[] // staged changes
+    workingTreeChanges: Change[]; // unstaged changes
 }
 
 interface Change {
