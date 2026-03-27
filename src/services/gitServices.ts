@@ -4,6 +4,7 @@ import { window, workspace, extensions } from "vscode";
 export class GitService {
     public repo: Repository;
     private gitExtension: GitExtension;
+    //singleton service provided to view and command
     private static instance: GitService | null = null;
     constructor(repo: Repository, gitExtension: GitExtension) {
         this.repo = repo;

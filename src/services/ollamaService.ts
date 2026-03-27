@@ -10,9 +10,16 @@ export interface OllamaModel {
 
 export class OllamaClient {
     private baseUrl: string;
+    private static instance: OllamaClient;
 
     constructor(baseUrl: string = "http://localhost:11434") {
         this.baseUrl = baseUrl;
+    }
+    static getInstance() {
+        if (!OllamaClient.instance) {
+            OllamaClient.instance = new OllamaClient();
+        }
+        return OllamaClient.instance;
     }
 
     async listModels(): Promise<OllamaModel[]> {

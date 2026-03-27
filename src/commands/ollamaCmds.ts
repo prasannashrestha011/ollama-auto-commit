@@ -11,7 +11,7 @@ export default class OllamaCmds {
         private state: ExtensionState,
         private treeProvider: OllamaTreeProvider
     ) {
-        this.client = new OllamaClient();
+        this.client = OllamaClient.getInstance();
     }
 
     registerCommands(): vscode.Disposable[] {
