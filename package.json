@@ -60,6 +60,11 @@
         "title": "List Models"
       },
       {
+        "command": "ollama-auto-commit.stage",
+        "title": "Stage file",
+        "icon": "$(check)"
+      },
+      {
         "command": "ollama-auto-commit.stageAll",
         "title": "Stage All files",
         "icon": "$(check)"
