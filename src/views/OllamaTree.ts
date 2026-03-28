@@ -67,14 +67,13 @@ export default class OllamaTreeProvider implements vscode.TreeDataProvider<Ollam
         if (element.label === "Staged") {
             if (!git) { return []; }
             const stagedFiles = await git.getStagedFiles();
-            return stagedFiles.map(file => this.resolveFilePathAndIcon(git, file, "stage"));
+            return stagedFiles.map(file => this.resolveFilePathAndIcon(git, file, "staged"));
 
         }
         if (element.label === "Changes") {
             if (!git) { return []; }
             const files = await git?.getUnstagedFiles();
-            console.log(files);
-            return files.map(file => this.resolveFilePathAndIcon(git, file, "unstage"));
+            return files.map(file => this.resolveFilePathAndIcon(git, file, "unstaged"));
 
         }
 
@@ -82,15 +81,14 @@ export default class OllamaTreeProvider implements vscode.TreeDataProvider<Ollam
         return [];
     }
 
-    private resolveFilePathAndIcon(git: GitService, file: string, type: "stage" | "unstage"): OllamaItem {
+    private resolveFilePathAndIcon(git: GitService, file: string, type: "staged" | "unstaged"): OllamaItem {
         const fileName = file.split("/")[file.length - 1];
-        console.log("FILEPATH ", file);
         const item = new OllamaItem(fileName, vscode.TreeItemCollapsibleState.None, {
-            title: type === "stage" ? "Stage File" : "Unstage File",
-            command: type === "stage" ? "ollama-auto-commit.stage" : "ollama-auto-commit.unstage",
-            arguments: [file]
+            title: "File Buffer",
+            command: "ollama-auto-commit.filebuffer",
+            arguments: [type, file]
         });
-        item.contextValue = type === "stage" ? "stagedItem" : "unstagedItem";
+        item.contextValue = type === "staged" ? "stagedItem" : "unstagedItem";
         item.description = file;
         item.resourceUri = vscode.Uri.file(path.join(git.getRepoRoot(), file));
         return item;
