@@ -5,10 +5,15 @@ export class GitCmds {
         const gitService = await GitService.getInstance();
 
         return [
-            commands.registerCommand("ollama-auto-commit.stage", async (filePath: string) => {
+            commands.registerCommand("ollama-auto-commit.stage", async (filePath: any) => {
                 if (!gitService) { return; };
-                await gitService.stageFile(filePath);
+                await gitService.stageFile(filePath.description);
             }),
+            commands.registerCommand("ollama-auto-commit.unstage", async (filePath: any) => {
+                if (!gitService) { return; }
+                console.log("RECEIEVED file path", filePath);
+                await gitService.unstageFile(filePath.description);
+            })
         ];
     }
 }
