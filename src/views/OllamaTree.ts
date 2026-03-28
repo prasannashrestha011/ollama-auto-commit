@@ -43,12 +43,8 @@ export default class OllamaTreeProvider implements vscode.TreeDataProvider<Ollam
                 vscode.TreeItemCollapsibleState.None // leaf node
             );
 
-            const changesSection = new OllamaItem(
-                'Changes',
-                vscode.TreeItemCollapsibleState.Collapsed // user can expand/collapse this
-            );
-            changesSection.contextValue = "changesSection";
 
+            /* stage section */
             const stagedSection = new OllamaItem(
                 'Staged',
                 vscode.TreeItemCollapsibleState.Collapsed,
@@ -56,21 +52,29 @@ export default class OllamaTreeProvider implements vscode.TreeDataProvider<Ollam
             stagedSection.contextValue = "stagedSection";
 
 
-            return [header, stagedSection, changesSection];
+            /* Unstage section */
+            const unstageSection = new OllamaItem(
+                'Changes',
+                vscode.TreeItemCollapsibleState.Collapsed // user can expand/collapse this
+            );
+            unstageSection.contextValue = "unstagedSection";
+
+
+            return [header, stagedSection, unstageSection];
         }
 
         const git = await GitService.getInstance();
         if (element.label === "Staged") {
             if (!git) { return []; }
             const stagedFiles = await git.getStagedFiles();
-            return stagedFiles.map(file => this.resolveFilePathAndIcon(git, file));
+            return stagedFiles.map(file => this.resolveFilePathAndIcon(git, file, "stage"));
 
         }
         if (element.label === "Changes") {
             if (!git) { return []; }
             const files = await git?.getUnstagedFiles();
             console.log(files);
-            return files.map(file => this.resolveFilePathAndIcon(git, file));
+            return files.map(file => this.resolveFilePathAndIcon(git, file, "unstage"));
 
         }
 
@@ -78,16 +82,17 @@ export default class OllamaTreeProvider implements vscode.TreeDataProvider<Ollam
         return [];
     }
 
-    private resolveFilePathAndIcon(git: GitService, file: string): OllamaItem {
-
-        const segments = file.split("/");
-        const fileName = segments[segments.length - 1]; // last segment
-        const item = new OllamaItem(fileName, vscode.TreeItemCollapsibleState.None, { title: "Stage file", command: "ollama-auto-commit.stage", arguments: [file] });
-        console.log("repoRoot:", git.getRepoRoot());
+    private resolveFilePathAndIcon(git: GitService, file: string, type: "stage" | "unstage"): OllamaItem {
+        const fileName = file.split("/")[file.length - 1];
+        console.log("FILEPATH ", file);
+        const item = new OllamaItem(fileName, vscode.TreeItemCollapsibleState.None, {
+            title: type === "stage" ? "Stage File" : "Unstage File",
+            command: type === "stage" ? "ollama-auto-commit.stage" : "ollama-auto-commit.unstage",
+            arguments: [file]
+        });
+        item.contextValue = type === "stage" ? "stagedItem" : "unstagedItem";
         item.description = file;
-        item.resourceUri = vscode.Uri.file(
-            path.join(git.getRepoRoot(), file)  // needs the absolute path
-        );
+        item.resourceUri = vscode.Uri.file(path.join(git.getRepoRoot(), file));
         return item;
     }
 }
