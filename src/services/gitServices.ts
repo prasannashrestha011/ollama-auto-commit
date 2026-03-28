@@ -70,9 +70,12 @@ export class GitService {
     }
 
     async stageFile(filePath: string) {
-        const { stdout } = await execAsync(`git add ${filePath}`);
-        console.log(stdout);
+        const { stdout } = await execAsync(`git add ${filePath}`, { cwd: this.repoRoot });
     }
+    async unstageFile(filePath: string): Promise<void> {
+        await execAsync(`git restore --staged "${filePath}"`, { cwd: this.repoRoot });
+    }
+
 
     parseDiff(diff: string): { additions: number; deletions: number } {
         let additions = 0;
