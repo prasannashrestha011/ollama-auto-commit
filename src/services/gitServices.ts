@@ -2,7 +2,9 @@ import { window, workspace } from "vscode";
 import { exec } from "child_process";
 import { promisify } from "util";
 import { StagedInfo } from "../types/git";
+import path from 'path';
 
+import fs from "fs";
 const execAsync = promisify(exec);
 
 export class GitService {
@@ -74,6 +76,19 @@ export class GitService {
     }
     async unstageFile(filePath: string): Promise<void> {
         await execAsync(`git restore --staged "${filePath}"`, { cwd: this.repoRoot });
+    }
+
+    async getStagedFileBuffer(filePath: string): Promise<string> {
+        const { stdout } = await execAsync(
+            `git show :${filePath}`,  // colon prefix reads from index (staged)
+            { cwd: this.repoRoot }
+        );
+        return stdout;
+    }
+
+    async getUnstagedFileBuffer(filePath: string): Promise<string> {
+        const { stdout } = await execAsync(`git diff ${filePath}`, { cwd: this.repoRoot });
+        return stdout;
     }
 
 
