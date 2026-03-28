@@ -39,8 +39,23 @@
       ],
       "view/item/context": [
         {
+          "command": "ollama-auto-commit.stage",
+          "when": "viewItem == unstagedItem",
+          "group": "inline"
+        },
+        {
+          "command": "ollama-auto-commit.unstage",
+          "when": "viewItem == stagedItem",
+          "group": "inline"
+        },
+        {
+          "command": "ollama-auto-commit.unstageAll",
+          "when": "viewItem == stagedSection",
+          "group": "inline"
+        },
+        {
           "command": "ollama-auto-commit.stageAll",
-          "when": "viewItem == changesSection",
+          "when": "viewItem == unstagedSection",
           "group": "inline"
         }
       ]
@@ -52,22 +67,28 @@
         "icon": "resources/model.svg"
       },
       {
-        "command": "ollama-auto-commit.testGit",
-        "title": "Test Git"
-      },
-      {
         "command": "ollama-auto-commit.listModels",
         "title": "List Models"
       },
       {
-        "command": "ollama-auto-commit.stage",
-        "title": "Stage file",
-        "icon": "$(check)"
-      },
-      {
         "command": "ollama-auto-commit.stageAll",
         "title": "Stage All files",
-        "icon": "$(check)"
+        "icon": "$(add)"
+      },
+      {
+        "command": "ollama-auto-commit.unstageAll",
+        "title": "Unstage All files",
+        "icon": "$(discard)"
+      },
+      {
+        "command": "ollama-auto-commit.stage",
+        "title": "Stage file",
+        "icon": "$(add)"
+      },
+      {
+        "command": "ollama-auto-commit.unstage",
+        "title": "Unstage file",
+        "icon": "$(discard)"
       }
     ]
   },
