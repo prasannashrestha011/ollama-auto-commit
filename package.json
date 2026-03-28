@@ -89,6 +89,10 @@
         "command": "ollama-auto-commit.unstage",
         "title": "Unstage file",
         "icon": "$(discard)"
+      },
+      {
+        "command": "ollama-auto-commit.filebuffer",
+        "title": "Get file buffer"
       }
     ]
   },
